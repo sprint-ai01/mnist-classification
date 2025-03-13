@@ -10,8 +10,10 @@ def train(epochs):
     train_loader = get_mnist_data_loader(train=True)
     test_loader = get_mnist_data_loader(train=False)
 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
     # 모델, 손실 함수, 옵티마이저
-    model = SimpleMLP()
+    model = SimpleMLP().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.01)
 
@@ -19,6 +21,7 @@ def train(epochs):
     for epoch in range(1, epochs + 1):
         model.train()
         for batch_idx, (data, target) in enumerate(train_loader):
+            data, target = data.to(device), target.to(device)
             data = data.view(data.size(0), -1)  # Flatten the input
             optimizer.zero_grad()
             output = model(data)
@@ -34,6 +37,7 @@ def train(epochs):
     correct = 0
     with torch.no_grad():
         for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
             data = data.view(data.size(0), -1)
             output = model(data)
             pred = output.argmax(dim=1, keepdim=True)
