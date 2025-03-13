@@ -11,6 +11,7 @@ def train(epochs):
     test_loader = get_mnist_data_loader(train=False)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print('current device type :', device)
 
     # 모델, 손실 함수, 옵티마이저
     model = SimpleMLP().to(device)
